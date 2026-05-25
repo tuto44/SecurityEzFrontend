@@ -1,0 +1,10 @@
+<form >
+    <div class="mb-3">
+  <label for="Nombre" class="form-label">Nombre</label>
+  <input type="text" *ngIf="categoria" class="form-control" id="Nombre" name="Nombre" placeholder="Ingrese su Nombre completo" [(ngModel)]="categoria.Nombre">
+</div>
+    <div class="mb-3">
+  <label for="Imagen" class="form-label">Imagen</label>
+  <input type="text" *ngIf="categoria" class="form-control" id="Imagen" name="Imagen" placeholder="Ingrese la URL de la Imagen" [(ngModel)]="categoria.Imagen">
+</div>
+</form>

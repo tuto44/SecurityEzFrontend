@@ -1,0 +1,42 @@
+<div class="container main-content mt-5 pt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 style-card-reserva">
+        <div class="card-body p-4">
+          <h3 class="text-center mb-4 fw-bold text-dark">
+            <i class="bi bi-tools text-warning me-2"></i>Agendar Instalación
+          </h3>
+          
+          <form (ngSubmit)="ProcesarAgenda()">
+            <div class="mb-4">
+              <label for="Fecha" class="form-label fw-semibold text-secondary">Seleccione la Fecha Ideal</label>
+              <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-calendar3 text-muted"></i></span>
+                <input type="date" 
+                       class="form-control border-start-0" 
+                       id="Fecha" 
+                       name="Fecha" 
+                       [(ngModel)]="nuevaReserva.Fecha" 
+                       required>
+              </div>
+            </div>
+
+            <div class="row g-2">
+              <div class="col-6">
+                <button type="button" class="btn btn-secondary w-100 py-2 fw-bold text-uppercase" routerLink="/home">
+                  Saltar / Cancelar
+                </button>
+              </div>
+              <div class="col-6">
+                <button type="submit" class="btn btn-warning w-100 py-2 fw-bold text-uppercase text-dark">
+                  Confirmar Cita
+                </button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

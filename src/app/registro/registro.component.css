@@ -1,0 +1,33 @@
+.input-group-text, .form-control {
+  border-radius: 8px;
+}
+
+.input-group:focus-within .input-group-text {
+  border-color: #FAB12F;
+  background-color: #fff !important;
+}
+
+.input-group:focus-within .form-control {
+  border-color: #FAB12F;
+  box-shadow: none;
+}
+
+.btn-warning {
+  background-color: #FAB12F;
+  border-color: #FAB12F;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-warning:hover {
+  background-color: #FA812F;
+  border-color: #FA812F;
+  color: #fff !important;
+}
+
+/* Quitar las flechas por defecto del input number del teléfono */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

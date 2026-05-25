@@ -1,0 +1,15 @@
+<form >
+    <div class="mb-3">
+  <label for="Cantidad" class="form-label">Cantidad</label>
+  <input type="number" *ngIf="descripcionPedido" class="form-control" id="cantidad" name="Cantidad" placeholder="Ingrese la Cantidad" [(ngModel)]="descripcionPedido.Cantidad">
+</div>
+    <div class="mb-3">
+  <label for="Precio" class="form-label">Precio</label>
+  <input type="number" *ngIf="descripcionPedido" class="form-control" id="Precio" name="Precio" placeholder="Ingrese el Precio" [(ngModel)]="descripcionPedido.Precio">
+</div>
+    <div class="mb-3">
+  <label for="MontoTotal" class="form-label">MontoTotal</label>
+  <input type="number" *ngIf="descripcionPedido" class="form-control" id="MontoTotal" name="MontoTotal" placeholder="Ingrese el MontoTotal" [(ngModel)]="descripcionPedido.MontoTotal">
+</div>
+</form>
+

@@ -1,0 +1,63 @@
+<div class="container main-content">
+<div class="row justify-content-end">
+  <div class="col">
+    <h2>Gestión Pedidos</h2>
+  </div>
+  <div class="col-lg-1 col-2">
+    <button class="btn btn-success"  (click)="NuevoPedido()">Nuevo</button>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="isLoading">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div class="row" *ngIf="!isLoading">
+    <div class="col-12">
+        <table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">IdUsuario</th>
+      <th scope="col">Fecha</th>
+      <th scope="col">Total</th>
+      
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    <tr *ngFor="let ped of vectorPedidos ">
+      <th scope="row">{{ped.IdPedido}}</th>
+      <td>{{ped.IdUsuario}}</td>
+      <td>{{ped.Fecha}}</td>
+      <td>{{ped.Total}}</td>
+      <td>
+        <button class="btn btn-warning me-1" (click)="EditarPedido(ped)">Editar</button>
+        <button class="btn btn-danger" (click)="EliminarPedido(ped.IdPedido)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalPedido" #modalPedido tabindex="-1" aria-labelledby="modalPedidoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalPedido">{{isNew ? 'Nuevo' : 'Editar'}} Pedido</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <app-cu-pedido [ngClass]="pedidoSeleccionado"> </app-cu-pedido>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="GuardarPedido()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

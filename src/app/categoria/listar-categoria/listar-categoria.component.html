@@ -1,0 +1,65 @@
+<div class="container main-content">
+<div class="row justify-content-end">
+  <div class="col">
+    <h2>Gestión Categorías</h2>
+  </div>
+  <div class="col-lg-1 col-2">
+    <button class="btn btn-success"  (click)="NuevoCategoria()">Nuevo</button>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="isLoading">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div class="row" *ngIf="!isLoading">
+    <div class="col-12">
+        <table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Imagen</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    <tr *ngFor="let cat of vectorCategorias ">
+      <th scope="row">{{cat.IdCategoria}}</th>
+      <td>{{cat.Nombre}}</td>
+      <td class="align-middle">
+  <img [src]="cat.Imagen" 
+       alt="{{cat.Nombre}}" 
+       class="img-thumbnail" 
+       style="width: 50px; height: 50px; object-fit: cover;">
+</td>
+      <td>
+        <button class="btn btn-warning me-1" (click)="EditarCategoria(cat)">Editar</button>
+        <button class="btn btn-danger" (click)="EliminarCategoria(cat.IdCategoria)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalCategoria" #modalCategoria tabindex="-1" aria-labelledby="modalCategoriaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalCategoria">{{isNew ? 'Nuevo' : 'Editar'}} Categoria</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <app-cu-categoria [categoria]="categoriaSelecionada"> </app-cu-categoria>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="GuardarCategoria()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+/* =========================================
+   CSS NAVBAR & OFFCANVAS SECURITY EZ
+   ========================================= */
+
+.navbar {
+    background-color: #4a90e2 !important; /* Tu Azul Security EZ */
+    padding: 10px 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+    color: white !important; 
+}
+
+.navbar-toggler {
+    border: 2px solid white; /* Cambiado a blanco para contrastar con el azul */
+    transition: 0.3s ease; 
+}
+
+.navbar-toggler:hover {
+    background-color: rgba(255, 255, 255, 0.2); 
+}
+
+/* --- MENÚ LATERAL (OFFCANVAS) --- */
+.offcanvas {
+    background-color: #f0f4f8; /* Fondo claro de tu paleta */
+    border-left: 2px solid #4a90e2;
+}
+
+.offcanvas-title {
+    color: #4a90e2; /* Títulos en azul */
+    font-weight: bold;
+}
+
+/* Estilo de los enlaces en el menú */
+.offcanvas-body .nav-link {
+    border: 1px solid transparent; 
+    color: #334155; /* Color de texto suave */
+    padding: 10px 15px;
+    border-radius: 10px; /* Bordes redondeados Security EZ */
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+}
+
+/* Hover con tu verde success o un azul claro */
+.offcanvas-body .nav-link:hover {
+    background-color: #4a90e2;
+    color: white;
+    border-color: #4a90e2;
+}
+
+/* Estilo para el botón de cerrar sesión específico */
+.offcanvas-body .nav-link.logout-link {
+    color: #e74c3c; /* Tu rojo de eliminar */
+}
+
+.offcanvas-body .nav-link.logout-link:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.offcanvas-body .nav-link.disabled {
+    color: #94a3b8 !important; /* Gris para deshabilitados */
+    cursor: default; 
+}
+
+/* Ajuste para el botón de cerrar (X) del offcanvas */
+.btn-close {
+    filter: brightness(0) saturate(100%) invert(53%) sepia(82%) try(1923%) hue-rotate(189deg) brightness(95%) contrast(89%);
+    /* Esto hace que la 'X' sea del color azul #4a90e2 */
+}

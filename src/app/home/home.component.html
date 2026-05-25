@@ -1,0 +1,40 @@
+<div class="bg-light py-5 mb-5 text-center border-bottom">
+  <div class="container py-4">
+    <h1 class="display-4 fw-bold text-dark mb-3">Bienvenidos a SecurityEZ</h1>
+    <p class="lead text-muted mx-auto" style="max-width: 700px;">
+      Tu aliado estratégico en soluciones integrales de seguridad y control. Ofrecemos el catálogo más robusto y confiable con altos estándares de calidad para proteger lo que más te importa.
+    </p>
+  </div>
+</div>
+
+<div class="container mb-5">
+  <h2 class="text-center fw-bold mb-4 position-relative pb-2">
+    Nuestras Categorías
+    <span class="position-absolute bottom-0 start-50 translate-middle-x bg-warning" style="height: 3px; width: 60px;"></span>
+  </h2>
+
+  <div class="d-flex justify-content-center my-5" *ngIf="isLoading">
+    <div class="spinner-border text-warning" role="status">
+      <span class="visually-hidden">Cargando categorías...</span>
+    </div>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" *ngIf="!isLoading">
+    <div class="col" *ngFor="let cat of vectorCategorias">
+      <div class="card h-100 shadow-sm border-0 transition-card">
+        <img [src]="cat.Imagen" 
+             alt="{{cat.Nombre}}" 
+             class="card-img-top" 
+             style="height: 220px; object-fit: cover;">
+        <div class="card-body d-flex flex-column text-center">
+          <h5 class="card-title fw-bold text-dark mb-3">{{cat.Nombre}}</h5>
+          
+          <a [routerLink]="['/store/catalogo', cat.IdCategoria]" 
+             class="btn btn-warning mt-auto fw-semibold w-100 py-2 text-dark">
+            Ver Productos
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

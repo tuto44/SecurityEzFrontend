@@ -1,0 +1,60 @@
+<form >
+<div class="mb-3">
+    <label for="IdProveedor" class="form-label small fw-semibold text-muted">Proveedor Técnico</label>
+    <div class="input-group">
+      <span class="input-group-text bg-light"><i class="bi bi-truck"></i></span>
+      <select class="form-select" 
+              id="IdProveedor" 
+              name="IdProveedor" 
+              [(ngModel)]="producto!.IdProveedor" 
+              required>
+        <option [value]="0" disabled selected>Seleccione un proveedor...</option>
+        
+        <option *ngFor="let prov of listaProveedores" [value]="prov.IdProveedor">
+          {{ prov.Nombre }}
+        </option>
+      </select>
+    </div>  
+  </div>
+
+<div class="mb-3">
+    <label for="IdCategoria" class="form-label small fw-semibold text-muted">Categoría del Producto</label>
+    <div class="input-group">
+      <span class="input-group-text bg-light"><i class="bi bi-tags"></i></span>
+      <select class="form-select" 
+              id="IdCategoria" 
+              name="IdCategoria" 
+              [(ngModel)]="producto!.IdCategoria" 
+              required>
+        <option [value]="0" disabled selected>Seleccione una categoría...</option>
+        
+        <option *ngFor="let cat of listaCategorias" [value]="cat.IdCategoria">
+          {{ cat.Nombre }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+    <div class="mb-3">
+  <label for="Nombre" class="form-label">Nombre</label>
+  <input type="text" *ngIf="producto" class="form-control" id="Nombre" name="Nombre" placeholder="Ingrese su Nombre completo" [(ngModel)]="producto.Nombre">
+</div>
+    <div class="mb-3">
+  <label for="Precio" class="form-label">Precio</label>
+  <input type="number" *ngIf="producto" class="form-control" id="Precio" name="Precio" placeholder="Ingrese el Precio" [(ngModel)]="producto.Precio">
+</div>
+    <div class="mb-3">
+  <label for="Stock" class="form-label">Stock</label>
+  <input type="number" *ngIf="producto" class="form-control" id="Stock" name="Stock" placeholder="Ingrese el Stock" [(ngModel)]="producto.Stock">
+</div>
+    <div class="mb-3">
+  <label for="Imagen" class="form-label">Imagen</label>
+  <input type="text" *ngIf="producto" class="form-control" id="Imagen" name="Imagen" placeholder="Ingrese la URL de la Imagen" [(ngModel)]="producto.Imagen">
+</div>
+<div class="mb-3">
+  <label for="Descripcion" class="form-label">Descripción</label>
+  <textarea *ngIf="producto" class="form-control" id="Descripcion" name="Descripcion" 
+            rows="3" placeholder="Ingrese una descripción detallada del producto"
+            [(ngModel)]="producto.Descripcion"></textarea>
+</div>
+</form>

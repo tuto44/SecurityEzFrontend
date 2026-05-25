@@ -1,0 +1,31 @@
+<form >
+    <div class="mb-3">
+  <label for="Nombre" class="form-label">Nombre</label>
+  <input type="text" *ngIf="usuario" class="form-control" id="Nombre" name="Nombre" placeholder="Ingrese su Nombre completo" [(ngModel)]="usuario.Nombre">
+</div>
+    <div class="mb-3">
+  <label for="Direccion" class="form-label">Direccion</label>
+  <input type="text" *ngIf="usuario" class="form-control" id="Direccion" name="Direccion" placeholder="Ingrese su Direccion" [(ngModel)]="usuario.Direccion">
+</div>
+    <div class="mb-3">
+  <label for="Telefono" class="form-label">#Celular</label>
+  <input type="number" *ngIf="usuario" class="form-control" id="Telefono" name="Telefono" placeholder="Ingrese su # de Celular" [(ngModel)]="usuario.Telefono">
+</div>
+    <div class="mb-3">
+  <label for="Usuario" class="form-label">Usuario</label>
+  <input type="text" *ngIf="usuario" class="form-control" id="Usuario" name="Usuario" placeholder="Ingrese su Usuario" [(ngModel)]="usuario.Usuario">
+</div>
+    <div class="mb-3">
+  <label for="Contrasena" class="form-label">Contrasena</label>
+  <input type="text" *ngIf="usuario" class="form-control" id="Contrasena" name="Contrasena" placeholder="Ingrese su Contraseña" [(ngModel)]="usuario.Contrasena">
+</div>
+<div class="mb-3">
+  <label for="TipoUsuario" class="form-label">Tipo de Usuario</label>
+  <!-- Agregamos el *ngIf y el [(ngModel)] vinculado a usuario.TipoUsuario -->
+  <select *ngIf="usuario" id="TipoUsuario" name="TipoUsuario" class="form-select" [(ngModel)]="usuario.TipoUsuario" required>
+    <option value="" disabled>Seleccione tipo de Usuario</option>
+    <option value="Administrador">Administrador</option>
+    <option value="Cliente">Cliente</option>
+  </select>
+</div> 
+</form>

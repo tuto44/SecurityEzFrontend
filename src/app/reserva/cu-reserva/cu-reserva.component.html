@@ -1,0 +1,15 @@
+<form >
+      <div class="mb-3">
+  <label for="IdUsuario" class="form-label">IdUsuario</label>
+  <input type="text" *ngIf="reserva" class="form-control" id="IdUsuario" name="IdUsuario" placeholder="Ingrese el Id del Usuario" [(ngModel)]="reserva.IdUsuario">
+</div>
+    <div class="mb-3">
+  <label for="Estado" class="form-label">Estado</label>
+  <input type="text" *ngIf="reserva" class="form-control" id="Estado" name="Estado" placeholder="Ingrese el Estado" [(ngModel)]="reserva.Estado">
+</div>
+    <div class="mb-3">
+  <label for="Fecha" class="form-label">Fecha</label>
+  <input type="datetime-local" *ngIf="reserva" class="form-control" id="Fecha" name="Fecha" placeholder="Ingrese la Fecha" [(ngModel)]="reserva.Fecha">
+</div>
+</form>
+  

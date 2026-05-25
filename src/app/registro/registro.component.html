@@ -1,0 +1,103 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100 pt-5 pb-5">
+  <div class="row w-100 justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      
+      <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        
+        <div class="card-header bg-dark text-center py-4 border-0">
+          <div class="mb-2">
+            <i class="bi bi-person-plus-fill text-warning" style="font-size: 2.5rem;"></i>
+          </div>
+          <h4 class="fw-bold text-white m-0">Crea tu Cuenta</h4>
+          <small class="text-muted text-uppercase tracking-wider">Únete a SecurityEz</small>
+        </div>
+
+        <div class="card-body p-4 bg-white">
+          <form (ngSubmit)="registrar()" #formRegistro="ngForm">
+            
+            <h6 class="text-secondary fw-bold mb-3 border-bottom pb-2">
+              <i class="bi bi-card-list me-1"></i> Datos Personales
+            </h6>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-muted">Nombre Completo</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control bg-light" placeholder="Ej. Ricardo Rendón" 
+                       [(ngModel)]="nuevoUsuario.Nombre" name="nombre" required>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-7 mb-3">
+                <label class="form-label small fw-semibold text-muted">Dirección de Residencia</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light text-muted"><i class="bi bi-geo-alt"></i></span>
+                  <input type="text" class="form-control bg-light" placeholder="Calle / Carrera / Ave" 
+                         [(ngModel)]="nuevoUsuario.Direccion" name="direccion" required>
+                </div>
+              </div>
+              <div class="col-sm-5 mb-3">
+                <label class="form-label small fw-semibold text-muted">Teléfono Móvil</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light text-muted"><i class="bi bi-telephone"></i></span>
+                  <input type="number" class="form-control bg-light" placeholder="3000000000" 
+                         [(ngModel)]="nuevoUsuario.Telefono" name="telefono" required>
+                </div>
+              </div>
+            </div>
+
+            <h6 class="text-secondary fw-bold mt-2 mb-3 border-bottom pb-2">
+              <i class="bi bi-shield-lock me-1"></i> Credenciales de Acceso
+            </h6>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold text-muted">Nombre de Usuario (ID de ingreso)</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted"><i class="bi bi-at"></i></span>
+                <input type="text" class="form-control bg-light" placeholder="Ej. ricardo12" 
+                       [(ngModel)]="nuevoUsuario.Usuario" name="username" required>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6 mb-3">
+                <label class="form-label small fw-semibold text-muted">Contraseña</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light text-muted"><i class="bi bi-key"></i></span>
+                  <input type="password" class="form-control bg-light" placeholder="••••••••" 
+                         [(ngModel)]="nuevoUsuario.Contrasena" name="pass" required minlength="6">
+                </div>
+              </div>
+              <div class="col-sm-6 mb-4">
+                <label class="form-label small fw-semibold text-muted">Confirmar Contraseña</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light text-muted"><i class="bi bi-key-checked"></i></span>
+                  <input type="password" class="form-control bg-light" placeholder="••••••••" 
+                         [(ngModel)]="confirmarContrasena" name="passConfirm" required>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" 
+                    class="btn btn-warning w-100 py-2.5 fw-bold text-dark text-uppercase shadow-sm"
+                    [disabled]="isLoading || !formRegistro.form.valid">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ isLoading ? 'Creando cuenta...' : 'Registrarme e Ingresar' }}
+            </button>
+
+          </form>
+        </div>
+
+        <div class="card-footer bg-light py-3 text-center border-0">
+          <p class="text-muted small m-0">
+            ¿Ya tienes una cuenta abierta? 
+            <a routerLink="/auth/login" class="text-warning fw-bold text-decoration-none">Inicia Sesión</a>
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

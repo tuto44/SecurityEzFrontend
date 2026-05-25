@@ -1,0 +1,67 @@
+<div class="container main-content">
+<div class="row justify-content-end">
+  <div class="col">
+    <h2>Gestión Descripción Pedidos</h2>
+  </div>
+  <div class="col-lg-1 col-2">
+    <button class="btn btn-success" (click)="NuevoDescripcionPedido()">Nuevo</button>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="isLoading">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div class="row" *ngIf="!isLoading">
+    <div class="col-12">
+        <table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">IdPedido</th>
+      <th scope="col">IdProducto</th>
+      <th scope="col">Cantidad</th>
+      <th scope="col">Precio</th>
+      <th scope="col">MontoTotal</th>
+      
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    <tr *ngFor="let dp of vectorDescripcionPedidos ">
+      <th scope="row">{{dp.IdDescripcionPedido}}</th>
+      <td>{{dp.IdPedido}}</td>
+      <td>{{dp.IdProducto}}</td>
+      <td>{{dp.Cantidad}}</td>
+      <td>{{dp.Precio}}</td>
+      <td>{{dp.MontoTotal}}</td>
+      <td>
+        <button class="btn btn-warning me-1" (click)="EditarDescripcionPedido(dp)">Editar</button>
+        <button class="btn btn-danger" (click)="EliminarDescripcionPedido(dp.IdDescripcionPedido)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalDescripcionPedido" #modalDescripcionPedido tabindex="-1" aria-labelledby="modalDescripcionPedidoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalDescripcionPedido">{{isNew ? 'Nuevo' : 'Editar'}} Descripcion Pedido</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <app-cu-descripcionpedido [descripcionPedido]="descripcionPedidoSelecionado"> </app-cu-descripcionpedido>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="GuardarDescripcionPedido()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

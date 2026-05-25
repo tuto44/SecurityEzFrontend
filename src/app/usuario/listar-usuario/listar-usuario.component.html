@@ -1,0 +1,69 @@
+<div class="container main-content">
+<div class="row justify-content-end">
+  <div class="col">
+    <h2>Gestión Usuarios</h2>
+  </div>
+  <div class="col-lg-1 col-2">
+    <button class="btn btn-success"  (click)="NuevoUsuario()">Nuevo</button>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="isLoading">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div class="row" *ngIf="!isLoading">
+    <div class="col-12">
+        <table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Direccion</th>
+      <th scope="col">Telefono</th>
+      <th scope="col">Usuario</th>
+      <th scope="col">Contrasena</th>
+      <th scope="col">TipoUsuario</th>
+      
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    <tr *ngFor="let us of vectorUsuarios ">
+      <th scope="row">{{us.IdUsuario}}</th>
+      <td>{{us.Nombre}}</td>
+      <td>{{us.Direccion}}</td>
+      <td>{{us.Telefono}}</td>
+      <td>{{us.Usuario}}</td>
+      <td>{{us.Contrasena}}</td>
+      <td>{{us.TipoUsuario}}</td>
+      <td>
+        <button class="btn btn-warning me-1" (click)="EditarUsuario(us)">Editar</button>
+        <button class="btn btn-danger" (click)="EliminarUsuario(us.IdUsuario)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalUsuario" #modalUsuario tabindex="-1" aria-labelledby="modalUsuarioLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalUsuario">{{isNew ? 'Nuevo' : 'Editar'}} Usuario</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <app-cu-usuario [usuario]="usuarioSelecionado"> </app-cu-usuario>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="GuardarUsuario()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

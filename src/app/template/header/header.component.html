@@ -1,0 +1,106 @@
+<nav class="navbar navbar-custom fixed-top">
+  <div class="container-fluid px-lg-5">
+    <a class="navbar-brand" routerLink="/home">SECURITY EZ</a>
+    
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menú de Navegación</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      
+      <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/home" data-bs-dismiss="offcanvas">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/store/catalogo" data-bs-dismiss="offcanvas">Catálogo de Productos</a>
+          </li>
+
+          <ng-container *ngIf="!_authService.estaLogueado">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/login" data-bs-dismiss="offcanvas">Iniciar Sesión</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/registro" data-bs-dismiss="offcanvas">Registrarse</a>
+            </li>
+          </ng-container>
+
+          <ng-container *ngIf="_authService.estaLogueado">
+            <li class="nav-item mb-3 border-bottom pb-2">
+              <span class="nav-user-info text-secondary">
+                Bienvenido, <strong class="text-dark">{{ currentUsuario?.Nombre }}</strong> 
+                <span class="badge bg-secondary d-block mt-1 w-50 small">{{ currentUsuario?.TipoUsuario }}</span>
+              </span>
+            </li>
+          </ng-container>
+
+          <ng-container *ngIf="_authService.estaLogueado && _authService.esCliente">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/store/carrito" data-bs-dismiss="offcanvas">
+                <i class="bi bi-cart-fill me-1"></i> Mi Carrito
+              </a>
+            </li>
+            <li class="nav-item">
+             <a class="nav-link" routerLink="/store/agendar-reserva" data-bs-dismiss="offcanvas">
+             <i class="bi bi-tools me-1"></i> Solicitar Instalación
+             </a>
+             </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/store/mis-pedidos" data-bs-dismiss="offcanvas">
+                <i class="bi bi-bag-check-fill me-1"></i> Historial de Pedidos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/store/mis-reservas" data-bs-dismiss="offcanvas">
+                <i class="bi bi-calendar-event-fill me-1"></i> Historial de Reservas
+              </a>
+            </li>
+          </ng-container>
+
+          <ng-container *ngIf="_authService.estaLogueado && _authService.esAdmin">
+            <li class="nav-item small fw-bold text-muted text-uppercase mt-2 mb-1 tracking-wider">Módulos Administrativos</li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/store/carrito" data-bs-dismiss="offcanvas">
+                <i class="bi bi-cart-fill me-1"></i> Mi Carrito
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/producto" data-bs-dismiss="offcanvas">Gestión Productos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/categoria" data-bs-dismiss="offcanvas">Gestión Categorías</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/usuario" data-bs-dismiss="offcanvas">Gestión Usuarios</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/proveedor" data-bs-dismiss="offcanvas">Gestión Proveedores</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/pedido" data-bs-dismiss="offcanvas">Gestión Pedidos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/reserva" data-bs-dismiss="offcanvas">Gestión Reservas</a>
+            </li>
+          </ng-container>
+
+             <li class="nav-item mt-auto pt-4" *ngIf="_authService.estaLogueado">
+            <button type="button" 
+                    (click)="logout()" 
+                    class="btn btn-danger w-100 py-2 fw-bold text-uppercase shadow-sm d-flex align-items-center justify-content-center border-0 style-logout" 
+                    data-bs-dismiss="offcanvas">
+              <i class="bi bi-box-arrow-right me-2 fs-5"></i> Cerrar Sesión
+            </button>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,70 @@
+<div class="container main-content">
+<div class="row justify-content-end">
+    <div class="col">
+    <h2>Gestión Productos</h2>
+  </div>
+  <div class="col-lg-1 col-2">
+    <button class="btn btn-success" (click)="NuevoProducto()">Nuevo</button>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="isLoading">
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
+<div class="row" *ngIf="!isLoading">
+    <div class="col-12">
+        <table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Precio</th>
+      <th scope="col">Stock</th>
+      <th scope="col">Imagen</th>
+      
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+    <tr *ngFor="let pr of vectorProductos ">
+      <th scope="row">{{pr.IdProducto}}</th>
+      <td>{{pr.Nombre}}</td>
+      <td>{{pr.Precio}}</td>
+      <td>{{pr.Stock}}</td>
+      <td class="align-middle">
+  <img [src]="pr.Imagen" 
+       alt="{{pr.Nombre}}" 
+       class="img-thumbnail" 
+       style="width: 50px; height: 50px; object-fit: cover;">
+</td>
+      <td>
+        <button class="btn btn-warning me-1" (click)="EditarProducto(pr)">Editar</button>
+        <button class="btn btn-danger" (click)="EliminarProducto(pr.IdProducto)">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalProducto" #modalProducto tabindex="-1" aria-labelledby="modalProductoLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalProducto">{{isNew ? 'Nuevo' : 'Editar'}} Producto</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <app-cu-producto [producto]="productoSeleccionado"> </app-cu-producto>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="GuardarProducto()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

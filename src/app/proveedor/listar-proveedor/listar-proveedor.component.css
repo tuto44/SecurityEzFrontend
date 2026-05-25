@@ -1,0 +1,32 @@
+/* Solución para el header fixed-top */
+.main-content {
+    padding-top: 100px; /* Ajusta según el alto de tu navbar */
+    padding-bottom: 50px;
+}
+
+/* Estilo para que la tabla no se vea apretada */
+.table thead th {
+    background-color: #f8fafc;
+    color: #64748b;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    padding: 15px;
+}
+
+.table tbody td {
+    padding: 15px;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* Redondear las esquinas de la card que contiene la tabla */
+.card {
+    overflow: hidden; /* Para que la tabla respete el border-radius de la card */
+    border: 1px solid #e2e8f0;
+}
+
+/* Ajuste del modal para que combine con Security EZ */
+.modal-content {
+    background-color: #ffffff;
+}

@@ -1,0 +1,10 @@
+<form >
+    <div class="mb-3">
+  <label for="Fecha" class="form-label">Fecha</label>
+  <input type="date" *ngIf="pedido" class="form-control" id="Fecha" name="Fecha" placeholder="Ingrese la Fecha" [(ngModel)]="pedido.Fecha">
+</div>
+    <div class="mb-3">
+  <label for="Total" class="form-label">Total</label>
+  <input type="number" *ngIf="pedido" class="form-control" id="Total" name="Total" placeholder="Ingrese el Total" [(ngModel)]="pedido.Total">
+</div>
+</form>

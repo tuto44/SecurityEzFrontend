@@ -1,0 +1,15 @@
+<form >
+    <div class="mb-3">
+  <label for="Nombre" class="form-label">Nombre</label>
+  <input type="text" *ngIf="proveedor" class="form-control" id="Nombre" name="Nombre" placeholder="Ingrese su Nombre completo" [(ngModel)]="proveedor.Nombre">
+</div>
+    <div class="mb-3">
+  <label for="Direccion" class="form-label">Direccion</label>
+  <input type="text" *ngIf="proveedor" class="form-control" id="Direccion" name="Direccion" placeholder="Ingrese su Direccion" [(ngModel)]="proveedor.Direccion">
+</div>
+    <div class="mb-3">
+  <label for="Telefono" class="form-label">#Celular</label>
+  <input type="number" *ngIf="proveedor" class="form-control" id="Telefono" name="Telefono" placeholder="Ingrese su # de Celular" [(ngModel)]="proveedor.Telefono">
+</div>
+</form>
+
