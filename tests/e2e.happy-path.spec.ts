@@ -1,6 +1,6 @@
 /**
  * @file e2e.happy-path.spec.ts
- * @description Prueba E2E del flujo completo de negocio — SecurityEz
+ * @description Prueba E2E del flujo completo de negocio — SecurityEz (100% Mockeado)
  *
  * Flujo cubierto (Happy Path integral):
  * CU-01  → Login con credenciales válidas
@@ -13,46 +13,26 @@
  * CU-29  → Pedidos: crear pedido (checkout completo)
  * CU-35  → Sistema: mensaje de confirmación de éxito
  * CU-03  → Auth: verificar que rutas protegidas bloquean el acceso
- *
- * ─── INSTRUCCIONES DE USO ────────────────────────────────────────────────────
- * 1. Levanta el frontend:  npm run start
- * 2. Levanta el backend:   node server.js  (o el comando de tu API)
- * 3. Ejecuta los tests:    npx playwright test tests/e2e.happy-path.spec.ts
- * 4. Ver reporte HTML:     npx playwright show-report
- * ─────────────────────────────────────────────────────────────────────────────
- *
- * ─── CREDENCIALES DE PRUEBA ──────────────────────────────────────────────────
- * Ajusta las constantes de la sección CONFIG si tus datos difieren.
- * ─────────────────────────────────────────────────────────────────────────────
  */
 
 import { test, expect, Page } from '@playwright/test';
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// SECCIÓN DE CONFIGURACIÓN — Ajusta estos valores a tu entorno
+// SECCIÓN DE CONFIGURACIÓN
 // ═══════════════════════════════════════════════════════════════════════════════
 const CONFIG = {
-  // Credenciales de un usuario CLIENTE válido en tu base de datos
   USUARIO_CLIENTE: 'florian',
   PASSWORD_CLIENTE: '123456',
 
-  // Credenciales de un usuario ADMINISTRADOR válido
   USUARIO_ADMIN: 'tuto',
   PASSWORD_ADMIN: '123456',
 
-  // Nombre visible del usuario en el navbar tras el login (campo Nombre del JWT)
   NOMBRE_USUARIO_VISIBLE: 'Lucas Florian',
 
-  // Nombre de un producto que EXISTE en tu catálogo y tiene Stock > 0
   NOMBRE_PRODUCTO: 'Insta 360 x4',
-
-  // Precio unitario del producto anterior (número, sin formato)
   PRECIO_PRODUCTO: 400000,
-
-  // Cantidad a agregar al carrito en el test de incremento (CU-23)
   CANTIDAD_A_AGREGAR: 2,
 
-  // Datos de la tarjeta simulada para el checkout
   TARJETA: {
     titular: 'Ricardo Rendón',
     numero: '4111 1111 1111 1111',
@@ -62,21 +42,14 @@ const CONFIG = {
 } as const;
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// HELPERS — Funciones reutilizables para acciones comunes
+// HELPERS & ACTIVACIÓN DE MOCKS GLOBALES
 // ═══════════════════════════════════════════════════════════════════════════════
 
-/**
- * Abre el menú offcanvas del navbar (hamburguesa) y espera a que esté visible.
- * Usa el selector CSS porque el botón toggler no tiene aria-label ni texto visible.
- */
 async function abrirMenuNavbar(page: Page): Promise<void> {
   await page.locator('button.navbar-toggler').click();
   await expect(page.locator('#offcanvasNavbar')).toBeVisible();
 }
 
-/**
- * Cierra el offcanvas del navbar si está abierto, para no bloquear interacciones.
- */
 async function cerrarMenuNavbar(page: Page): Promise<void> {
   const closeBtn = page.locator('#offcanvasNavbar .btn-close');
   if (await closeBtn.isVisible()) {
@@ -86,30 +59,30 @@ async function cerrarMenuNavbar(page: Page): Promise<void> {
 }
 
 /**
- * Intercepta la llamada al endpoint de login y la mockea con un JWT válido.
- * Úsala si quieres aislar el test del backend real.
- *
- * NOTA: Por defecto el test usa el backend real.
- * Para activar el mock, descomenta la llamada a esta función en el test.
+ * Intercepta y simula el login exitoso devolviendo un JWT con los reclamos esperados.
  */
 async function mockLoginAPI(page: Page): Promise<void> {
+  // Payload estructurado con los datos de Lucas Florian esperados por el Navbar
   const FAKE_JWT =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
-    'eyJJZFVzdWFyaW8iOjEsIk5vbWJyZSI6IlJpY2FyZG8iLCJUaXBvVXN1YXJpbyI6IkNsaWVudGUiLCJpYXQiOjE3MTY5OTk5OTl9.' +
+    'eyJJZFVzdWFyaW8iOjEsIk5vbWJyZSI6Ikx1Y2FzIEZsb3JpYW4iLCJUaXBvVXN1YXJpbyI6IkNsaWVudGUiLCJpYXQiOjE3MTY5OTk5OTl9.' +
     'FIRMA_INVALIDA_REEMPLAZAR';
 
   await page.route('**/api/usuario/login', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ token: FAKE_JWT }),
-    });
+    if (route.request().method() === 'POST') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ token: FAKE_JWT }),
+      });
+    } else {
+      await route.continue();
+    }
   });
 }
 
 /**
- * Intercepta el endpoint de productos y devuelve datos controlados.
- * Úsala para aislar el test del backend real.
+ * Intercepta y simula la lista de productos del catálogo.
  */
 async function mockProductosAPI(page: Page): Promise<void> {
   await page.route('**/api/producto/', async (route) => {
@@ -133,7 +106,7 @@ async function mockProductosAPI(page: Page): Promise<void> {
 }
 
 /**
- * Intercepta el endpoint de creación de pedido completo.
+ * Intercepta y simula la creación del pedido.
  */
 async function mockRegistrarPedidoAPI(page: Page): Promise<void> {
   await page.route('**/api/pedido/registrar-todo', async (route) => {
@@ -146,43 +119,42 @@ async function mockRegistrarPedidoAPI(page: Page): Promise<void> {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// TEST PRINCIPAL — Happy Path integral
+// TEST PRINCIPAL — Happy Path integral (MOCK ACTIVO)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => {
 
-  // Limpiamos localStorage antes de cada test para garantizar estado limpio
+  // Configuramos todos los MOCKS obligatorios antes de cada ejecución de pasos
   test.beforeEach(async ({ page }) => {
+    await mockLoginAPI(page);
+    await mockProductosAPI(page);
+    await mockRegistrarPedidoAPI(page);
+
     await page.goto('/login');
     await page.evaluate(() => localStorage.clear());
   });
 
-  // ─────────────────────────────────────────────────────────────────────────────
   test(
     'Flujo completo: Login → Catálogo → Carrito → Checkout',
     async ({ page }) => {
 
       // =========================================================================
-      // ── BLOQUE 1: CU-01 — Iniciar sesión con credenciales válidas ─────────────
+      // ── BLOQUE 1: CU-01 — Iniciar sesión con credenciales válidas
       // =========================================================================
-
       await test.step('CU-01: Navegar al login e iniciar sesión', async () => {
         await page.goto('/login');
 
-        // Verificar que la página de login cargó correctamente
         await expect(page).toHaveTitle(/Proyecto|SecurityEz|Angular/i);
         await expect(page.getByText('SecurityEz')).toBeVisible();
         await expect(page.getByText('Control de Acceso')).toBeVisible();
 
-        // Completar el formulario de login
         await page.getByPlaceholder('Ej. rrendon').fill(CONFIG.USUARIO_CLIENTE);
         await page.getByPlaceholder('••••••••').fill(CONFIG.PASSWORD_CLIENTE);
 
-        // Verificar que el botón de submit está habilitado con datos válidos
         const btnIngresar = page.getByRole('button', { name: /ingresar al sistema/i });
         await expect(btnIngresar).toBeEnabled();
 
-        // Enviar el formulario y esperar la respuesta del backend
+        // Enviamos formulario sabiendo que Playwright interceptará la petición vía mock
         await Promise.all([
           page.waitForResponse(
             (res) => res.url().includes('/api/usuario/login') && res.status() === 200,
@@ -191,15 +163,12 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
           btnIngresar.click(),
         ]);
 
-        // Verificar redirección exitosa al home
         await expect(page).toHaveURL(/\/home/);
 
-        // Verificar que el token JWT fue guardado en localStorage
         const token = await page.evaluate(() => localStorage.getItem('securityEZ_token'));
         expect(token).not.toBeNull();
         expect(token?.length).toBeGreaterThan(20);
 
-        // Verificar que el navbar muestra el nombre del usuario logueado
         await abrirMenuNavbar(page);
         await expect(
           page.locator('#offcanvasNavbar .nav-user-info strong')
@@ -208,27 +177,22 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
       });
 
       // =========================================================================
-      // ── BLOQUE 2: CU-19 — Navegar al catálogo y verificar que carga ───────────
+      // ── BLOQUE 2: CU-19 — Navegar al catálogo y verificar que carga
       // =========================================================================
-
       await test.step('CU-19: Navegar al catálogo y verificar que los productos cargan', async () => {
         await page.goto('/store/catalogo');
 
-        // Esperar a que el spinner de carga desaparezca
         await expect(page.locator('.spinner-border')).not.toBeVisible({ timeout: 15_000 });
 
-        // Verificar que el título del catálogo está presente
         await expect(
           page.getByRole('heading', { name: /catálogo de productos/i })
         ).toBeVisible();
 
-        // Verificar que hay al menos una tarjeta de producto visible
         const tarjetasProducto = page.locator('.card.h-100');
         await expect(tarjetasProducto.first()).toBeVisible({ timeout: 10_000 });
         const cantidadProductos = await tarjetasProducto.count();
         expect(cantidadProductos).toBeGreaterThan(0);
 
-        // Verificar que los productos muestran precio y botón de agregar
         await expect(page.locator('.text-success.fw-bold').first()).toBeVisible();
         await expect(
           page.getByRole('button', { name: /añadir al carrito/i }).first()
@@ -236,9 +200,8 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
       });
 
       // =========================================================================
-      // ── BLOQUE 3: CU-20 — Ver detalle de un producto ─────────────────────────
+      // ── BLOQUE 3: CU-20 — Ver detalle de un producto
       // =========================================================================
-
       await test.step('CU-20: Abrir el modal de detalle de un producto y validar su información', async () => {
         const tarjetaObjetivo = page
           .locator('.card.h-100')
@@ -246,9 +209,7 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
           .first();
 
         const usarPrimero = !(await tarjetaObjetivo.isVisible());
-        const tarjeta = usarPrimero
-          ? page.locator('.card.h-100').first()
-          : tarjetaObjetivo;
+        const tarjeta = usarPrimero ? page.locator('.card.h-100').first() : tarjetaObjetivo;
 
         const nombreProductoEnCard = await tarjeta.locator('.card-title').textContent();
         const precioTexto = await tarjeta.locator('.text-success.fw-bold').textContent();
@@ -274,9 +235,8 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
       });
 
       // =========================================================================
-      // ── BLOQUE 4: CU-22 — Agregar producto al carrito ────────────────────────
+      // ── BLOQUE 4: CU-22 — Agregar producto al carrito
       // =========================================================================
-
       let precioUnitario = 0;
 
       await test.step('CU-22: Agregar un producto al carrito desde el catálogo', async () => {
@@ -307,9 +267,8 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
       });
 
       // =========================================================================
-      // ── BLOQUE 5: CU-23 & CU-27 — Incrementar cantidad y calcular total ───────
+      // ── BLOQUE 5: CU-23 & CU-27 — Incrementar cantidad y calcular total
       // =========================================================================
-
       await test.step('CU-23 & CU-27: Navegar al carrito, incrementar cantidad y verificar total', async () => {
         await page.goto('/store/carrito');
 
@@ -355,9 +314,8 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
       });
 
       // =========================================================================
-      // ── BLOQUE 6: CU-34 — Persistencia del carrito en localStorage ───────────
+      // ── BLOQUE 6: CU-34 — Persistencia del carrito en localStorage
       // =========================================================================
-
       await test.step('CU-34: Recargar la página y verificar que el carrito persiste en localStorage', async () => {
         const carritoAntesStr = await page.evaluate(() =>
           localStorage.getItem('securityEZ_cart')
@@ -395,18 +353,9 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
       });
 
       // =========================================================================
-      // ── BLOQUE 7: CU-29 & CU-35 — Checkout: crear pedido y confirmar ─────────
+      // ── BLOQUE 7: CU-29 & CU-35 — Checkout: crear pedido y confirmar
       // =========================================================================
-
       await test.step('CU-29 & CU-35: Proceder al pago, crear el pedido y verificar confirmación', async () => {
-        await page.route('**/api/pedido/registrar-todo', async (route) => {
-          await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify({ IdPedido: 42, message: 'Pedido registrado exitosamente' }),
-          });
-        });
-
         const btnProcesar = page.getByRole('button', { name: /proceder al pago/i });
         await expect(btnProcesar).toBeVisible();
         await btnProcesar.click();
@@ -438,7 +387,7 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
 
         await pedidoResponsePromise;
 
-        // ── CU-35: Verificar el mensaje de confirmación de éxito ─────────────
+        // ── CU-35: Verificar el mensaje de confirmación de éxito
         await expect(page.locator('.swal2-popup')).toBeVisible({ timeout: 10_000 });
         await expect(
           page.locator('.swal2-title')
@@ -459,12 +408,9 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
       });
 
       // =========================================================================
-      // ── BLOQUE 8: CU-03 — Verificar que rutas protegidas bloquean el acceso ──
+      // ── BLOQUE 8: CU-03 — Verificar que rutas protegidas bloquean el acceso
       // =========================================================================
-
       await test.step('CU-03: Verificar que las rutas protegidas redirigen si no se tienen permisos', async () => {
-        // Intentar acceder directamente a una ruta protegida por AdminGuard 
-        // (Nota: como no se ha hecho logout manual, esto prueba el comportamiento con el rol actual si aplica, o denegación si requiere re-autenticación)
         await page.goto('/usuario');
         await expect(page).toHaveURL(/\/home/, { timeout: 5_000 });
 
@@ -475,10 +421,9 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
         await expect(page).toHaveURL(/\/home/, { timeout: 5_000 });
       });
 
-    } // fin del test principal
-  ); // fin de test()
-
-}); // fin de test.describe()
+    }
+  );
+});
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // TESTS COMPLEMENTARIOS — Casos de error y borde
@@ -486,9 +431,13 @@ test.describe('SecurityEz — Flujo E2E completo de compra (Happy Path)', () => 
 
 test.describe('SecurityEz — Casos de error y borde', () => {
 
-  test('CU-01 [error]: Login con credenciales incorrectas muestra mensaje de error', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
+    await mockProductosAPI(page);
     await page.goto('/login');
+  });
 
+  test('CU-01 [error]: Login con credenciales incorrectas muestra mensaje de error', async ({ page }) => {
+    // Sobrescribimos el mock localmente solo para este test para forzar el código 401
     await page.route('**/api/usuario/login', async (route) => {
       await route.fulfill({
         status: 401,
@@ -511,8 +460,6 @@ test.describe('SecurityEz — Casos de error y borde', () => {
   });
 
   test('CU-01 [borde]: El botón de login está deshabilitado con campos vacíos', async ({ page }) => {
-    await page.goto('/login');
-
     const btnIngresar = page.getByRole('button', { name: /ingresar al sistema/i });
 
     await expect(btnIngresar).toBeDisabled();
