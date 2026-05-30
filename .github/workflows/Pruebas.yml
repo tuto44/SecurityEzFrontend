@@ -4,40 +4,90 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
+    # ─── SERVICIO DE BASE DE DATOS (SQL SERVER EN DOCKER) ─────────────────────
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+          - 1433:1433
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: "lore2006" # Coincide con tu config.ts y tu script .sql
+
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Frontend
+      uses: actions/checkout@v4
     
-    - uses: actions/setup-node@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
       with:
         node-version: lts/*
         
-    - name: Install dependencies
+    - name: Install Frontend dependencies
       run: npm ci
 
-    # ─── NUEVO: EJECUCIÓN DE PRUEBAS UNITARIAS CON JEST ─────────────────────────
+    # ─── CONFIGURACIÓN Y CLONACIÓN DEL BACKEND ────────────────────────────────
+    - name: Checkout Backend API
+      uses: actions/checkout@v4
+      with:
+        # ⚠️ Recuerda cambiar esto por tu usuario real de GitHub
+        repository: 'https://github.com/tuto44/SecurityEzBackend.git' 
+        path: 'backend'
+        # token: ${{ secrets.BACKEND_TOKEN }} # Descomenta si tu repositorio es privado
+
+    - name: Install Backend dependencies
+      run: |
+        cd backend
+        npm install
+
+    # ─── CONFIGURACIÓN DE LA BASE DE DATOS USANDO DATABASE.SQL ────────────────
+    - name: Create Database Structure (database.sql)
+      run: |
+        # Instalar las herramientas de SQL Server en la máquina de Ubuntu
+        sudo apt-get update && sudo apt-get install -y mssql-tools unixodbc-dev
+        
+        # Esperar 15 segundos para asegurar que el contenedor de SQL Server esté 100% listo
+        sleep 15
+        
+        # Ejecutar tu archivo database.sql para crear la BD, tablas y llaves foráneas
+        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P lore2006 -i backend/database.sql
+
+    # ─── ARRANQUE DE LA API EN SEGUNDO PLANO ──────────────────────────────────
+    - name: Start Backend Server
+      run: |
+        cd backend
+        # Arranca usando ts-node-dev en segundo plano gracias al '&'
+        npm run start &
+        # Esperamos 5 segundos a que Express se monte y escuche el puerto
+        sleep 5 
+
+    # ─── EJECUCIÓN DE PRUEBAS UNITARIAS (JEST) ─────────────────────────────────
     - name: Run Jest Unit Tests
       run: npx jest --testPathPattern="auth.service.spec|admin.guard.spec|usuario.service.spec|categoria.service.spec|proveedor.service.spec|producto.service.spec|carrito.service.spec|pedido.service.spec|utility.service.spec|descripcion-pedido.service.spec" --no-coverage --reporters=default --reporters=jest-html-reporter
 
+    # ─── EJECUCIÓN DE PRUEBAS E2E (PLAYWRIGHT) ─────────────────────────────────
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
       
     - name: Run Playwright tests
       run: npx playwright test
 
-    # ─── NUEVO: SUBIR REPORTE HTML DE JEST COMO ARTEFACTO ───────────────────────
+    # ─── SUBIR REPORTE HTML DE JEST COMO ARTEFACTO ─────────────────────────────
     - name: Upload Jest HTML Report
       uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
         name: jest-html-report
-        path: test-report.html # Nombre por defecto que genera jest-html-reporter
+        path: test-report.html
         retention-days: 30
 
-    # ─── REPORTE DE PLAYWRIGHT (EXISTENTE) ──────────────────────────────────────
+    # ─── SUBIR REPORTE HTML DE PLAYWRIGHT COMO ARTEFACTO ───────────────────────
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
