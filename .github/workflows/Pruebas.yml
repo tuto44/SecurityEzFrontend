@@ -52,21 +52,22 @@ jobs:
         # 1. Instalar las herramientas de SQL Server
         sudo apt-get update && sudo apt-get install -y mssql-tools unixodbc-dev
         
-        # 2. Espera inteligente: Comprobar si SQL Server ya acepta conexiones
-        echo "Esperando a que SQL Server esté completamente disponible..."
-        for i in {1..20}; do
-          # Intentamos una conexión rápida de prueba (Status 0 significa éxito)
-          /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P lore2006 -Q "SELECT 1" &>/dev/null
-          if [ $? -eq 0 ]; then
-            echo "¡SQL Server está listo!"
+        # 2. Espera inteligente sin romper el pipeline ante fallos temporales
+        echo "Esperando a que SQL Server responda en el puerto..."
+        for i in {1..15}; do
+          # -t 3 le dice a sqlcmd que desista a los 3 segundos si no conecta, evitando bloqueos eternos
+          if /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U sa -P lore2006 -t 3 -Q "SELECT 1"; then
+            echo "¡SQL Server está completamente listo y disponible!"
+            READY=true
             break
+          else
+            echo "Intento $i/15: SQL Server aún está iniciando. Esperando 5 segundos..."
+            sleep 5
           fi
-          echo "Aún no responde, esperando 5 segundos más... (Intento $i/20)"
-          sleep 5
         done
-        
-        # 3. Ejecutar tu archivo database.sql seguro de que el puerto está abierto
-        /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P lore2006 -i backend/database.sql
+
+        # 3. Lanzar el script estructural si la conexión fue exitosa
+        /opt/mssql-tools/bin/sqlcmd -S 127.0.0.1 -U sa -P lore2006 -i backend/database.sql
 
     # ─── ARRANQUE DE LA API EN SEGUNDO PLANO ──────────────────────────────────
     - name: Start Backend Server
