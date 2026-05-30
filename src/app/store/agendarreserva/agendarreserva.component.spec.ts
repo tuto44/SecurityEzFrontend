@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { AgendarReservaComponent } from './agendarreserva.component';
 
-import { AgendarreservaComponent } from './agendarreserva.component';
-
-describe('AgendarreservaComponent', () => {
-  let component: AgendarreservaComponent;
-  let fixture: ComponentFixture<AgendarreservaComponent>;
+describe('AgendarReservaComponent', () => {
+  let component: AgendarReservaComponent;
+  let fixture: ComponentFixture<AgendarReservaComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AgendarreservaComponent]
+      declarations: [AgendarReservaComponent],
+      imports: [HttpClientTestingModule]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AgendarreservaComponent);
+    fixture = TestBed.createComponent(AgendarReservaComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

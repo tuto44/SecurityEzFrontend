@@ -1,20 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+// src/app/login/login.component.spec.ts
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { LoginComponent } from './login.component';
-import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
+import Swal from 'sweetalert2';
 
-describe('LoginComponent', () => {
-
+describe('LoginComponent (Pruebas Unitarias)', () => {
   let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
-
   let authServiceMock: any;
   let routerMock: any;
 
-  beforeEach(async () => {
-
+  beforeEach(() => {
     authServiceMock = {
       Login: jest.fn()
     };
@@ -23,76 +18,59 @@ describe('LoginComponent', () => {
       navigate: jest.fn()
     };
 
-    await TestBed.configureTestingModule({
-      declarations: [LoginComponent],
-      imports: [FormsModule],
-      providers: [
-        { provide: AuthService, useValue: authServiceMock },
-        { provide: Router, useValue: routerMock }
-      ]
-    }).compileComponents();
+    // Espiamos SweetAlert para que no levante alertas reales en la consola de Jest
+    jest.spyOn(Swal, 'fire').mockImplementation(() => Promise.resolve({} as any));
 
-    fixture = TestBed.createComponent(LoginComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-
+    component = new LoginComponent(authServiceMock, routerMock);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('debe iniciar sesión correctamente', () => {
-
-    const responseMock = {
-      token: 'fake-token',
-      user: {
-        Nombre: 'Ricardo'
-      }
-    };
-
-    authServiceMock.Login.mockReturnValue(of(responseMock));
-
-    component.usr = 'admin';
-    component.pwd = '123456';
+  it('[CU-35] - Debería mostrar advertencia si el usuario o contraseña están vacíos', () => {
+    component.usr = '   ';
+    component.pwd = '123';
 
     component.login();
 
-    expect(authServiceMock.Login).toHaveBeenCalledWith('admin', '123456');
-    expect(component.isLoading).toBeFalsy();
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/home']);
-
-  });
-
-  it('debe mostrar error si las credenciales son incorrectas', () => {
-
-    authServiceMock.Login.mockReturnValue(
-      throwError(() => ({
-        error: {
-          message: 'Usuario o contraseña incorrectos'
-        }
-      }))
-    );
-
-    component.usr = 'admin';
-    component.pwd = 'incorrecta';
-
-    component.login();
-
-    expect(authServiceMock.Login).toHaveBeenCalled();
-    expect(component.isLoading).toBeFalsy();
-
-  });
-
-  it('no debe iniciar sesión con campos vacíos', () => {
-
-    component.usr = '';
-    component.pwd = '';
-
-    component.login();
-
+    expect(Swal.fire).toHaveBeenCalledWith(expect.objectContaining({
+      icon: 'warning',
+      title: 'Campos vacíos',
+      confirmButtonColor: '#FAB12F'
+    }));
     expect(authServiceMock.Login).not.toHaveBeenCalled();
-
   });
 
+  it('[CU-01 / CU-35] - Debería procesar login exitoso, activar loading, disparar Toast y redirigir', () => {
+    component.usr = 'admin';
+    component.pwd = 'admin123';
+    
+    const resMock = { user: { Nombre: 'Lucas' }, token: 'abc' };
+    authServiceMock.Login.mockReturnValue(of(resMock));
+
+    component.login();
+
+    expect(component.isLoading).toBe(false);
+    expect(Swal.fire).toHaveBeenCalledWith(expect.objectContaining({
+      text: '¡Bienvenido de nuevo, Lucas!',
+      icon: 'success',
+      toast: true
+    }));
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/home']);
+  });
+
+  it('[CU-35] - Debería manejar errores de autenticación del backend correctamente', () => {
+    component.usr = 'errorUser';
+    component.pwd = 'wrongPass';
+
+    const errMock = { error: { message: 'Credenciales inválidas' } };
+    authServiceMock.Login.mockReturnValue(throwError(() => errMock));
+
+    component.login();
+
+    expect(component.isLoading).toBe(false);
+    expect(Swal.fire).toHaveBeenCalledWith(expect.objectContaining({
+      icon: 'error',
+      title: 'Error de autenticación',
+      text: 'Credenciales inválidas',
+      confirmButtonColor: '#DD0303'
+    }));
+  });
 });

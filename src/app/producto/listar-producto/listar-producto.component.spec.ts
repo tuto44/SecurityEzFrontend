@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ListarProductoComponent } from './listar-producto.component';
 import { ProductoService } from '../../services/producto.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { UtilityService } from '../../services/utility.service';
 import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';

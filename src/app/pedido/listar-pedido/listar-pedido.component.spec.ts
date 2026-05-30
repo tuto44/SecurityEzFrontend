@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ListarPedidoComponent } from './listar-pedido.component';
 import { PedidoService } from '../../services/pedido.service';
 import { UtilityService } from '../../services/utility.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { FormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { CuPedidoComponent } from '../cu-pedido/cu-pedido.component';

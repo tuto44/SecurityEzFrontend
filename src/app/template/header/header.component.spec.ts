@@ -3,7 +3,7 @@ import { HeaderComponent } from './header.component';
 import { AuthService } from '../../services/auth.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BehaviorSubject } from 'rxjs';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 describe('HeaderComponent', () => {
 
   let component: HeaderComponent;

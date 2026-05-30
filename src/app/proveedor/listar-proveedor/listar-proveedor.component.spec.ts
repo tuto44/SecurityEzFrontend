@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 import { ListarProveedorComponent } from './listar-proveedor.component';
 
 describe('ListarProveedorComponent', () => {

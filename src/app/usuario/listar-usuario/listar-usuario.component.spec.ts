@@ -5,7 +5,7 @@ import { UtilityService } from '../../services/utility.service';
 import { of, throwError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { CuUsuarioComponent } from '../cu-usuario/cu-usuario.component';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing'
 describe('ListarUsuarioComponent', () => {
 
   let component: ListarUsuarioComponent;
