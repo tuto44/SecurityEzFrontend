@@ -37,7 +37,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         # ⚠️ Recuerda cambiar esto por tu usuario real de GitHub
-        repository: 'https://github.com/tuto44/SecurityEzBackend.git' 
+        repository: 'tuto44/SecurityEzBackend' 
         path: 'backend'
         # token: ${{ secrets.BACKEND_TOKEN }} # Descomenta si tu repositorio es privado
 
