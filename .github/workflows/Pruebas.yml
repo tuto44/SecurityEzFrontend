@@ -46,16 +46,26 @@ jobs:
         cd backend
         npm install
 
-    # ─── CONFIGURACIÓN DE LA BASE DE DATOS USANDO DATABASE.SQL ────────────────
+# ─── CONFIGURACIÓN DE LA BASE DE DATOS USANDO DATABASE.SQL ────────────────
     - name: Create Database Structure (database.sql)
       run: |
-        # Instalar las herramientas de SQL Server en la máquina de Ubuntu
+        # 1. Instalar las herramientas de SQL Server
         sudo apt-get update && sudo apt-get install -y mssql-tools unixodbc-dev
         
-        # Esperar 15 segundos para asegurar que el contenedor de SQL Server esté 100% listo
-        sleep 15
+        # 2. Espera inteligente: Comprobar si SQL Server ya acepta conexiones
+        echo "Esperando a que SQL Server esté completamente disponible..."
+        for i in {1..20}; do
+          # Intentamos una conexión rápida de prueba (Status 0 significa éxito)
+          /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P lore2006 -Q "SELECT 1" &>/dev/null
+          if [ $? -eq 0 ]; then
+            echo "¡SQL Server está listo!"
+            break
+          fi
+          echo "Aún no responde, esperando 5 segundos más... (Intento $i/20)"
+          sleep 5
+        done
         
-        # Ejecutar tu archivo database.sql para crear la BD, tablas y llaves foráneas
+        # 3. Ejecutar tu archivo database.sql seguro de que el puerto está abierto
         /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P lore2006 -i backend/database.sql
 
     # ─── ARRANQUE DE LA API EN SEGUNDO PLANO ──────────────────────────────────
